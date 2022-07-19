@@ -16,6 +16,38 @@ int xlsx::open(const char *filename)
 	return ret_code;
 }
 
+
+xmlNodePtr search_layer(xmlNodePtr layer, const char *name)
+{
+	xmlNodePtr to_ret = 0x0;
+	xmlNodePtr cur;
+
+	cur = layer;
+	while (cur) {
+		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
+			to_ret = cur;
+			break;
+		}
+		cur = cur->next;
+	}
+
+	return to_ret;
+}
+
+int count_children(xmlNodePtr layer, const char *name)
+{
+	xmlNodePtr cur = layer->children;
+	int to_ret = 0;
+	while(cur) {
+		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
+			to_ret++;
+		}
+		cur = cur->next;
+	}
+
+	return to_ret;
+}
+
 /* count amount of sheets and store them in memory */
 int xlsx::analyze()
 {
@@ -56,18 +88,11 @@ int xlsx::analyze()
 		}
 		cur = cur->children;
 
-		sheet_info *cur_sheet, *prev_sheet = 0x0;
-
-		xmlChar *key;
-		xmlChar *value;
-
-		while (cur) {
-			if (!xmlStrcmp(cur->name, (xmlChar *) "sheets")) {
-				printf("%s\n", xmlGetProp(cur, (xmlChar *) "name"));
-			}
-			cur = cur->next;
+		cur = search_layer(cur, "sheets");
+		if (!cur) {
+			throw -6;
 		}
-
+		num_sheets = count_children(cur, "sheet");
 		// cleanup
 		xmlFreeDoc(ptr);
 	}
@@ -75,6 +100,8 @@ int xlsx::analyze()
 	zip_fclose(info);
 	return 0;
 }
+
+
 
 sheet *xlsx::get_sheet(size_t index)
 {
