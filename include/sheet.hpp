@@ -1,5 +1,6 @@
 #pragma once
 #include <zip.h>
+#include <libxml/parser.h>
 
 struct sheet_info
 {
@@ -17,7 +18,7 @@ class sheet
 	protected:
 
 	private:
-	char *name;
-	char *filename;
 	zip_file_t *_sheet;
+	char *name;
+	char *filepath;
 };
