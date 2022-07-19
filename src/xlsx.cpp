@@ -17,36 +17,7 @@ int xlsx::open(const char *filename)
 }
 
 
-xmlNodePtr search_layer(xmlNodePtr layer, const char *name)
-{
-	xmlNodePtr to_ret = 0x0;
-	xmlNodePtr cur;
 
-	cur = layer;
-	while (cur) {
-		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
-			to_ret = cur;
-			break;
-		}
-		cur = cur->next;
-	}
-
-	return to_ret;
-}
-
-int count_children(xmlNodePtr layer, const char *name)
-{
-	xmlNodePtr cur = layer->children;
-	int to_ret = 0;
-	while(cur) {
-		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
-			to_ret++;
-		}
-		cur = cur->next;
-	}
-
-	return to_ret;
-}
 
 /* count amount of sheets and store them in memory */
 int xlsx::analyze()
@@ -77,7 +48,6 @@ int xlsx::analyze()
 		// read xml file and count number of sheets
 		xmlDocPtr ptr = xmlParseMemory(xml_raw, stat.size);
 		xmlNodePtr cur;
-		xmlAttrPtr attr;
 		if (!ptr) {
 			throw -4;
 		}
@@ -105,7 +75,32 @@ int xlsx::analyze()
 
 sheet *xlsx::get_sheet(size_t index)
 {
-	return 0x0;
+	zip_stat_t stat;
+	zip_file_t *raw_sheet;
+	int ret_code = 0;
+	char path[128];
+	char *xml_raw;
+	sheet *to_ret = 0x0;
+	if (index < 1 || index > num_sheets) {
+		goto exit;
+	}
+
+	snprintf(path, 128, "xl/worksheets/sheet%d.xml", index);
+	ret_code = zip_stat(_zip, path, 0, &stat);
+
+	
+	raw_sheet = zip_fopen(_zip, path, 0);
+	if (!raw_sheet) {
+		goto exit;
+	}
+	xml_raw = new char[stat.size + 1];
+
+	zip_fread(raw_sheet, xml_raw, stat.size);
+	zip_fclose(raw_sheet);
+	to_ret = new sheet{xml_raw, stat.size};
+exit:  
+	delete[] xml_raw;
+	return to_ret;
 }
 
 xlsx::~xlsx()

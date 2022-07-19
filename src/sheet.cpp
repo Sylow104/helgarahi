@@ -1,24 +1,13 @@
 #include "sheet.hpp"
 #include <string.h>
 
-sheet::sheet(zip_t *zip_ref, const char *i_name, const char *i_filename)
+sheet::sheet(const char *buffer, uint64_t size)
 {
-	name = new char[64];
-	filepath = new char[64];
-	strncpy(name, i_name, 64);
-	snprintf(filepath, 64, "xl/worksheets/%s.xml", i_filename);
-
-	_sheet = zip_fopen(zip_ref, filepath, 0);
-	if (!_sheet) {
-		throw -1;
-	} 
+	root = xmlParseMemory(buffer, size);
 }
-
-
 
 sheet::~sheet()
 {
-	if (_sheet) {
-		zip_fclose(_sheet);
-	}
+	xmlFreeDoc(root);
 }
+
