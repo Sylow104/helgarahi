@@ -46,19 +46,20 @@ int letter_to_x(const char *region, size_t size)
 	return to_ret;
 }
 
-int cell_coordinates(const char *coordinate, struct cell *out)
+struct cell_coord cell_coordinates(const char *coordinate)
 {
 	char *ptr = (char*) coordinate;
 	int letter_count = 0;
 	char *number = (char *) coordinate;
+	struct cell_coord to_ret;
 	// check if valid
 	while (*ptr >= 'A' && *ptr <= 'Z') {
 		ptr++;
 		letter_count++;
 	}
 
-	out->x = letter_to_x(coordinate, letter_count);
-	out->y = strtol(&ptr[letter_count], 0x0, 0);
+	to_ret.x = letter_to_x(coordinate, letter_count);
+	to_ret.y = strtol(ptr, 0x0, 0);
 
-	return 0;
+	return to_ret;
 }
