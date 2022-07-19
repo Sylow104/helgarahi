@@ -1,5 +1,5 @@
 #pragma once
-#include "xml.h"
+#include "row.hpp"
 #include <stdint.h>
 
 class sheet
@@ -12,4 +12,5 @@ class sheet
 
 	private:
 	xmlDocPtr root;
+	row *list;
 };
