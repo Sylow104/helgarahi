@@ -14,6 +14,5 @@ class row
 	xmlNodePtr _row;
 
 	row *next = 0x0;
-	cell *head;
-	cell *tail;
+	cell *head = 0x0;
 };
