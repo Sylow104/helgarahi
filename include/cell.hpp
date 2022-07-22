@@ -10,13 +10,17 @@ enum cell_e
 
 class cell_t
 {
-	protected:
-	cell_e type = CE_UNK;
-	void *contents = 0x0;
-
 	public:
-	const char *get();
 	void print();
+	const char *get();
+
+	protected:
+	~cell_t();
+	void set(const char *to_use);
+	cell_e type = CE_UNK;
+
+	private:
+	char *contents = 0x0;
 };
 
 class cell : public cell_t
@@ -29,6 +33,5 @@ class cell : public cell_t
 	protected:
 
 	private:
-	xmlNodePtr _cell;
 	cell *next = 0x0;
 };

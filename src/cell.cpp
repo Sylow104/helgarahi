@@ -1,11 +1,11 @@
 #include "cell.hpp"
+#include <string.h>
 
 cell::cell(xmlNodePtr node, cell *previous)
 {
 	if (previous) {
 		previous->next = this;
 	}
-	_cell = node;
 
 	xmlNodePtr target = search_children(node, "t");
 	if (target) {
@@ -19,11 +19,10 @@ cell::cell(xmlNodePtr node, cell *previous)
 		}
 	}
 	if (target->children) {
-		contents = target->children->content;
+		set((char *) target->children->content);
 	} else {
 		type = CE_UNK;
 	}
-	print();
 }
 
 cell::~cell()
@@ -33,19 +32,38 @@ cell::~cell()
 	}
 }
 
+/*
 void cell_t::print()
 {
-	char *str;
 	switch (type) {
 		case CE_UNK:
-			str = "No value\n";
+			printf("No value\n");
 			break;
 		case CE_NUMBER:
-			str = "Float value : %s\n";
+			printf("Float value: %s\n", contents);
 			break;
 		case CE_TEXT:
-			str = "String value : %s\n";
+			printf("String value: %s\n", (char *) contents);
 			break;
 	}
-	printf(str, contents);
+	
+}
+*/
+
+void cell_t::set(const char *to_use)
+{
+	if (!to_use) {
+		contents = 0x0;
+		return;
+	}
+	contents = strdup(to_use);
+
+	return;
+}
+
+cell_t::~cell_t()
+{
+	if (contents) {
+		free(contents);
+	}
 }
