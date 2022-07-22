@@ -88,7 +88,6 @@ sheet *xlsx::get_sheet(size_t index)
 	snprintf(path, 128, "xl/worksheets/sheet%d.xml", index);
 	ret_code = zip_stat(_zip, path, 0, &stat);
 
-	
 	raw_sheet = zip_fopen(_zip, path, 0);
 	if (!raw_sheet) {
 		goto exit;
@@ -98,8 +97,8 @@ sheet *xlsx::get_sheet(size_t index)
 	zip_fread(raw_sheet, xml_raw, stat.size);
 	zip_fclose(raw_sheet);
 	to_ret = new sheet{xml_raw, stat.size};
-exit:  
 	delete[] xml_raw;
+exit:
 	return to_ret;
 }
 
