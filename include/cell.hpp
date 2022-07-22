@@ -12,11 +12,11 @@ class cell_t
 {
 	public:
 	const char *get();
+	cell_e type;
 
 	protected:
 	~cell_t();
 	void set(const char *to_use);
-	cell_e type = CE_UNK;
 
 	private:
 	char *contents = 0x0;

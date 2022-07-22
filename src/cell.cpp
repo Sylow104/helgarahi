@@ -32,24 +32,6 @@ cell::~cell()
 	}
 }
 
-/*
-void cell_t::print()
-{
-	switch (type) {
-		case CE_UNK:
-			printf("No value\n");
-			break;
-		case CE_NUMBER:
-			printf("Float value: %s\n", contents);
-			break;
-		case CE_TEXT:
-			printf("String value: %s\n", (char *) contents);
-			break;
-	}
-	
-}
-*/
-
 void cell_t::set(const char *to_use)
 {
 	if (!to_use) {
