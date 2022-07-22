@@ -30,9 +30,12 @@ cell::~cell()
 	if (next) {
 		delete next;
 	}
+	if (contents) {
+		free(contents);
+	}
 }
 
-void cell_t::set(const char *to_use)
+void cell::set(const char *to_use)
 {
 	if (!to_use) {
 		contents = 0x0;
@@ -41,11 +44,4 @@ void cell_t::set(const char *to_use)
 	contents = strdup(to_use);
 
 	return;
-}
-
-cell_t::~cell_t()
-{
-	if (contents) {
-		free(contents);
-	}
 }
