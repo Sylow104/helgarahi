@@ -12,5 +12,6 @@ class sheet
 
 	private:
 	xmlDocPtr root;
-	row *list;
+	row *header = 0x0;
+	row *data = 0x0;
 };
