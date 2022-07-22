@@ -5,7 +5,6 @@ row::row(xmlNodePtr node, row *previous, int index)
 	if (previous) {
 		previous->next = this;
 	}
-	_row = node;
 	_index = index;
 	int children = count_children(node, "c");
 	int i;

@@ -7,7 +7,9 @@ int main(int argc, const char *argv[])
 	file.open(argv[1]);
 	file.analyze();
 
-	printf("%d hello\n", letter_to_x("ZZ", 2));
-	cell_coord testing = cell_coordinates("A1");
+	sheet *test = file.get_sheet(1);
+	sheet *best = file.get_sheet(2);
+	delete test;
+	delete best;
 	return 0;
 }

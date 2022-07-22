@@ -11,7 +11,6 @@ class row
 
 	private:
 	int _index;
-	xmlNodePtr _row;
 
 	row *next = 0x0;
 	cell *head = 0x0;

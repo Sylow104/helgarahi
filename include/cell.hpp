@@ -11,7 +11,6 @@ enum cell_e
 class cell_t
 {
 	public:
-	void print();
 	const char *get();
 
 	protected:

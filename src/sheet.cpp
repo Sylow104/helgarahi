@@ -1,53 +1,43 @@
 #include "sheet.hpp"
 #include <string.h>
 
-int gen_row_list(xmlNodePtr layer, xmlNodePtr *out)
-{
-	int num_entries = count_children(layer, "row");
-	xmlNodePtr cur;
-	if (num_entries < 1) {
-		return -1;
-	}
-	out = new xmlNodePtr[num_entries];
-
-	cur = search_layer(layer->children, "row");
-	if (!cur) {
-		return -2;
-	}
-	for (int i = 0; i < num_entries; i++) {
-		out[i] = cur;
-		cur = cur->next;
-	}
-
-	return num_entries;
-}
-
 sheet::sheet(const char *buffer, uint64_t size)
 {
 	root = xmlParseMemory(buffer, size);
 	xmlNodePtr node_root = xmlDocGetRootElement(root);
-	xmlNodePtr sheet_data = search_layer(node_root, "sheetData");
+	xmlNodePtr tmp = search_layer(node_root, "worksheet");
+	xmlNodePtr sheet_data = search_layer(tmp->children, "sheetData");
 
 	// generate rows
 	row *cur;
 	row *prev = 0x0;
-	xmlNodePtr *list;
-	int num_entries = gen_row_list(sheet_data, list);
-	if (num_entries < 0) {
-		throw 1;
-	}
+	xmlNodePtr load_data;
 
-	for (int i = 0; i < num_entries; i++) {
-		cur = new row{list[i], prev, i};
+	load_data = search_layer(sheet_data->children, "row");
+	if (!load_data) {
+		throw -2;
+	}
+	header = new row{load_data, 0x0, 0};
+
+
+	load_data = search_layer(load_data->next, "row");
+
+	int i = 1;
+	while (load_data) {
+		cur = new row{load_data, prev, i};
+		if (!data) {
+			data = cur;
+		}
 		prev = cur;
+		load_data = search_layer(load_data->next, "row");
+		i++;
 	}
-
-
-	delete list;  
+	xmlFreeDoc(root);
 }
 
 sheet::~sheet()
 {
-	xmlFreeDoc(root);
+	delete header;
+	delete data;
 }
 
