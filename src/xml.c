@@ -2,6 +2,23 @@
 #include <math.h>
 
 
+xmlNodePtr search_children(xmlNodePtr node, const char *name)
+{
+	xmlNodePtr to_ret = 0x0;
+	xmlNodePtr cur;
+
+	cur = node;
+	while (cur) {
+		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
+			to_ret = cur;
+			break;
+		}
+		cur = cur->children;
+	}
+
+	return to_ret;
+}
+
 xmlNodePtr search_layer(xmlNodePtr layer, const char *name)
 {
 	xmlNodePtr to_ret = 0x0;
