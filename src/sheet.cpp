@@ -17,7 +17,7 @@ sheet::sheet(const char *buffer, uint64_t size)
 	if (!load_data) {
 		throw -2;
 	}
-	header = new row{load_data, 0x0, 0};
+	_header = new header{load_data};
 
 
 	load_data = search_layer(load_data->next, "row");
@@ -37,7 +37,7 @@ sheet::sheet(const char *buffer, uint64_t size)
 
 sheet::~sheet()
 {
-	delete header;
+	delete _header;
 	delete data;
 }
 

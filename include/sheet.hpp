@@ -1,4 +1,5 @@
 #pragma once
+#include "header.hpp"
 #include "row.hpp"
 #include <stdint.h>
 
@@ -12,6 +13,6 @@ class sheet
 
 	private:
 	xmlDocPtr root;
-	row *header = 0x0;
+	header *_header = 0x0;
 	row *data = 0x0;
 };
