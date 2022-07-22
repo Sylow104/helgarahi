@@ -8,7 +8,18 @@ enum cell_e
 	CE_NUMBER
 };
 
-class cell
+class cell_t
+{
+	protected:
+	cell_e type = CE_UNK;
+	void *contents = 0x0;
+
+	public:
+	const char *get();
+	void print();
+};
+
+class cell : public cell_t
 {
 	public:
 	cell(xmlNodePtr node);
@@ -19,6 +30,5 @@ class cell
 
 	private:
 	xmlNodePtr _cell;
-	cell *next;
-	cell_e type = CE_UNK;
+	cell *next = 0x0;
 };
