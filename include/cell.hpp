@@ -13,13 +13,12 @@ enum cell_e
 class cell
 {
 	public:
-	cell(xmlNodePtr node, cell *previous);
 	cell();
 	~cell();
 	
 	const char *get();
 	int init(xmlNodePtr node, const h_entry *col);
-	cell_e type;
+	
 
 	protected:
 	
@@ -27,6 +26,6 @@ class cell
 
 	private:
 	h_entry *header_col;
-	cell *next = 0x0;
+	cell_e type;
 	char *contents = 0x0;
 };
