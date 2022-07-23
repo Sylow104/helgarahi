@@ -55,7 +55,6 @@ header::header(xmlNodePtr node)
 		columns[i].set(cur);
 		cur = search_layer(cur->next, "c");
 	}
-
 }
 
 h_entry *header::operator[](size_t index)

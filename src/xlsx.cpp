@@ -16,9 +16,6 @@ int xlsx::open(const char *filename)
 	return ret_code;
 }
 
-
-
-
 /* count amount of sheets and store them in memory */
 int xlsx::analyze()
 {

@@ -49,6 +49,11 @@ void sheet::print_column(size_t index)
 	(*_header)[index]->print();
 }
 
+row *sheet::operator[](size_t index)
+{
+	return &data[index];
+}
+
 sheet::~sheet()
 {
 	delete _header;

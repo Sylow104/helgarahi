@@ -12,6 +12,8 @@ class sheet
 	void print_column(size_t index);
 	header *_header = 0x0;
 
+	row *operator[](size_t index);
+
 	protected:
 
 	private:
