@@ -1,5 +1,6 @@
 #pragma once
 #include "xml.h"
+#include "header.hpp"
 
 class h_entry;
 
@@ -17,8 +18,7 @@ class cell
 	~cell();
 	
 	const char *get();
-	int init(xmlNodePtr node, const h_entry *col);
-	
+	int init(xmlNodePtr node, h_entry *col);
 
 	protected:
 	
@@ -28,4 +28,5 @@ class cell
 	h_entry *header_col;
 	cell_e type;
 	char *contents = 0x0;
+	cell *next;
 };

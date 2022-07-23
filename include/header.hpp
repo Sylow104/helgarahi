@@ -1,6 +1,8 @@
 #pragma once
 #include "xml.h"
 
+class cell;
+
 class h_entry
 {
 	public:
@@ -9,6 +11,8 @@ class h_entry
 
 	const char *column();
 	void set(xmlNodePtr node);
+	cell *head = 0x0;
+	cell *tail = 0x0;
 
 	protected:
 
@@ -23,8 +27,7 @@ class header
 	~header();
 
 	size_t num_entries = 0;
-
-	const h_entry *operator[](size_t index);
+	h_entry *operator[](size_t index);
 
 	protected:
 

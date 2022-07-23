@@ -1,6 +1,5 @@
 #pragma once
 #include "cell.hpp"
-#include "header.hpp"
 
 class sheet;
 

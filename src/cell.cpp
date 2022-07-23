@@ -13,7 +13,7 @@ cell::~cell()
 	}
 }
 
-int cell::init(xmlNodePtr node, const h_entry *col)
+int cell::init(xmlNodePtr node, h_entry *col)
 {
 	header_col = (h_entry *) col;
 	xmlNodePtr target = search_children(node, "t");
@@ -32,6 +32,16 @@ int cell::init(xmlNodePtr node, const h_entry *col)
 	} else {
 		type = CE_UNK;
 	}
+	
+	if (!col->head) {
+		col->head = this;
+		col->tail = this;
+	} else {
+		col->tail->next = this;
+		col->tail = this;
+	}
+
+	
 	return 0;
 }
 

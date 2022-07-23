@@ -50,7 +50,7 @@ header::header(xmlNodePtr node)
 
 }
 
-const h_entry *header::operator[](size_t index)
+h_entry *header::operator[](size_t index)
 {
 	return &columns[index];
 }
