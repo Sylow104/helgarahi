@@ -1,5 +1,7 @@
 #include "header.hpp"
+#include "cell.hpp"
 #include <string.h>
+#include <stdio.h>
 
 h_entry::h_entry()
 {
@@ -28,6 +30,15 @@ void h_entry::set(xmlNodePtr node)
 	}
 }
 
+void h_entry::print()
+{
+	printf("Header: %s\n", _column);
+	cell *cur;
+	for (cur = head; cur; cur = cur->next) {
+		printf("%s\n", cur->get());
+	}
+}
+
 
 header::header(xmlNodePtr node)
 {
@@ -42,10 +53,7 @@ header::header(xmlNodePtr node)
 
 	for (int i = 0; i < num_entries; i++) {
 		columns[i].set(cur);
-		cur = search_layer(cur, "c");
-		if (!cur) {
-			throw -11;
-		}
+		cur = search_layer(cur->next, "c");
 	}
 
 }

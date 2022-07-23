@@ -9,9 +9,12 @@ class sheet
 	sheet(const char *buffer, uint64_t size);
 	~sheet();
 
+	void print_column(size_t index);
+	header *_header = 0x0;
+
 	protected:
 
 	private:
-	header *_header = 0x0;
+	
 	row *data = 0x0;
 };

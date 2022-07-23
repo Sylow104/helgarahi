@@ -19,6 +19,7 @@ class cell
 	
 	const char *get();
 	int init(xmlNodePtr node, h_entry *col);
+	cell *next = 0x0;
 
 	protected:
 	
@@ -28,5 +29,5 @@ class cell
 	h_entry *header_col;
 	cell_e type;
 	char *contents = 0x0;
-	cell *next;
+	
 };

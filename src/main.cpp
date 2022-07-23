@@ -9,6 +9,7 @@ int main(int argc, const char *argv[])
 
 	sheet *test = file.get_sheet(1);
 	sheet *best = file.get_sheet(2);
+	test->print_column(1);
 	delete test;
 	delete best;
 	return 0;

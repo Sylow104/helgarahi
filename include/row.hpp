@@ -9,8 +9,8 @@ class row
 	row();
 	~row();
 
-	int init(xmlNodePtr node, size_t num_cells, sheet *parent, 
-		header *head);
+	int init(xmlNodePtr node, sheet *parent);
+	cell *operator[](size_t index);
 
 	protected:
 

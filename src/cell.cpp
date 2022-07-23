@@ -45,6 +45,11 @@ int cell::init(xmlNodePtr node, h_entry *col)
 	return 0;
 }
 
+const char *cell::get()
+{
+	return (const char *) contents;
+}
+
 void cell::set(const char *to_use)
 {
 	if (!to_use) {

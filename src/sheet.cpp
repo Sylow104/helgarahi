@@ -35,14 +35,18 @@ sheet::sheet(const char *buffer, uint64_t size)
 
 	load_data = search_layer(load_data->next, "row");
 	for (size_t i = 0; i < row_count; i++) {
-		if (data[i].init(load_data, _header->num_entries, 
-				this, _header)) {
+		if (data[i].init(load_data, this)) {
 			throw -6;
 		}
 		load_data = search_layer(load_data->next, "row");
 	}
 
 	xmlFreeDoc(root);
+}
+
+void sheet::print_column(size_t index)
+{
+	(*_header)[index]->print();
 }
 
 sheet::~sheet()

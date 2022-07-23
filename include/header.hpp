@@ -11,6 +11,7 @@ class h_entry
 
 	const char *column();
 	void set(xmlNodePtr node);
+	void print();
 	cell *head = 0x0;
 	cell *tail = 0x0;
 
@@ -28,6 +29,8 @@ class header
 
 	size_t num_entries = 0;
 	h_entry *operator[](size_t index);
+
+	void print(size_t index);
 
 	protected:
 
