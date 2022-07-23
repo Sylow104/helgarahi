@@ -22,9 +22,13 @@ class header
 	header(xmlNodePtr node);
 	~header();
 
+	size_t num_entries = 0;
+
+	const h_entry *operator[](size_t index);
+
 	protected:
 
 	private:
-	size_t num_entries = 0;
+	
 	h_entry *columns;
 };

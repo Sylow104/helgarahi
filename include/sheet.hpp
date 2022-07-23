@@ -9,10 +9,13 @@ class sheet
 	sheet(const char *buffer, uint64_t size);
 	~sheet();
 
+	
+
 	protected:
 
 	private:
 	xmlDocPtr root;
 	header *_header = 0x0;
+	size_t row_count;
 	row *data = 0x0;
 };

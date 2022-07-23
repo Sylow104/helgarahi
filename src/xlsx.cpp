@@ -62,7 +62,7 @@ int xlsx::analyze()
 		if (!cur) {
 			throw -6;
 		}
-		num_sheets = count_children(cur, "sheet");
+		num_sheets = count_layer(cur->children, "sheet");
 		// cleanup
 		xmlFreeDoc(ptr);
 	}

@@ -31,7 +31,7 @@ void h_entry::set(xmlNodePtr node)
 
 header::header(xmlNodePtr node)
 {
-	num_entries = count_children(node, "c");
+	num_entries = count_layer(node->children, "c");
 	if (num_entries < 1) {
 		throw -10;
 	}
@@ -48,6 +48,11 @@ header::header(xmlNodePtr node)
 		}
 	}
 
+}
+
+const h_entry *header::operator[](size_t index)
+{
+	return &columns[index];
 }
 
 header::~header()

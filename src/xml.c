@@ -36,9 +36,9 @@ xmlNodePtr search_layer(xmlNodePtr layer, const char *name)
 	return to_ret;
 }
 
-int count_children(xmlNodePtr layer, const char *name)
+int count_layer(xmlNodePtr layer, const char *name)
 {
-	xmlNodePtr cur = layer->children;
+	xmlNodePtr cur = layer;
 	int to_ret = 0;
 	while(cur) {
 		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
