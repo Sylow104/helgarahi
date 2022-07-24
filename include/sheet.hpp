@@ -1,22 +1,18 @@
 #pragma once
-#include "header.hpp"
-#include "row.hpp"
+#include "cell.hpp"
 #include <stdint.h>
 
-class sheet
+struct sheet
 {
-	public:
-	sheet(const char *buffer, uint64_t size);
+	sheet(const char *xml_buffer, uint64_t size);
 	~sheet();
 
-	void print_column(size_t index);
-	header *_header = 0x0;
+	size_t num_columns;
+	size_t num_rows;
 
-	row *operator[](size_t index);
+	cell **cells;
+	const cell *header;
 
-	protected:
-
-	private:
-	
-	row *data = 0x0;
+	void print(bool row, size_t index);
+	void print_header();
 };

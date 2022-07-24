@@ -1,11 +1,11 @@
 #include "sheet.hpp"
-#include <string.h>
 
-sheet::sheet(const char *buffer, uint64_t size)
+sheet::sheet(const char *xml_buffer, uint64_t size)
 {
-	xmlDocPtr root = xmlParseMemory(buffer, size);
+	xmlDocPtr root = xmlParseMemory(xml_buffer, size);
 	xmlNodePtr load_data = xmlDocGetRootElement(root);
-	size_t row_count;
+	xmlNodePtr row_data, column_data;
+	size_t i, j;
 
 	if (!load_data) {
 		throw -1;
@@ -18,45 +18,43 @@ sheet::sheet(const char *buffer, uint64_t size)
 	if (!load_data) {
 		throw -3;
 	}
-	
-
 	load_data = search_layer(load_data->children, "row");
 	if (!load_data) {
 		throw -4;
 	}
-	_header = new header{load_data};
+	
+	num_rows = count_layer(load_data, "row");
+	num_columns = count_layer(load_data->children, "c");
 
+	cells = new cell *[num_rows];
 
-	row_count = count_layer(load_data->next, "row");
-	if (row_count < 1) {
-		throw -5;
-	}
-	data = new row[row_count];
-
-	load_data = search_layer(load_data->next, "row");
-	for (size_t i = 0; i < row_count; i++) {
-		if (data[i].init(load_data, this)) {
-			throw -6;
+	row_data = load_data;
+	for (i = 0; i < num_rows; i++) {
+		cells[i] = new cell[num_columns];
+		column_data = search_layer(row_data->children, "c");
+		for (j = 0; j < num_columns; j++) {
+			cells[i][j].set(column_data);
+			column_data = search_layer(column_data->next, "c");
 		}
-		load_data = search_layer(load_data->next, "row");
+		row_data = search_layer(row_data->next, "row");
 	}
+	header = cells[i];
 
 	xmlFreeDoc(root);
 }
 
-void sheet::print_column(size_t index)
-{
-	(*_header)[index]->print();
-}
-
-row *sheet::operator[](size_t index)
-{
-	return &data[index];
-}
-
 sheet::~sheet()
 {
-	delete _header;
-	delete[] data;
+	size_t i;
+	for (i = 0; i < num_rows; i++) {
+		delete[] cells[i];
+	}
+	delete[] cells;
 }
 
+void sheet::print_header()
+{
+	for (size_t j = 0; j < num_columns; j++) {
+		printf("%s\n", cells[0][j].content);
+	}
+}
