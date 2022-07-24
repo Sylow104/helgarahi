@@ -27,6 +27,8 @@ int cell::set(xmlNodePtr node)
 		}
 	}
 	if (!target->children) {
+		content = 0x0;
+		type = CE_NONE;
 		return 1;
 	}
 
