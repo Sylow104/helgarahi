@@ -16,5 +16,11 @@ struct sheet
 	void print(bool row, size_t index);
 	void print_header();
 	int excel_date_to_unix(size_t column);
+	int exponential_to_int(size_t column);
 	cell_e column_type(size_t column);
+
+	int rename(const char *to, const char *target);
+
+	private:
+	int double_to_int(size_t column, double (callback)(double));
 };

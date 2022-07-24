@@ -60,10 +60,45 @@ void sheet::print_header()
 	}
 }
 
+int sheet::double_to_int(size_t column, double (callback)(double)) {
+	double in;
+	long long out;
+	char *tail;
+	char **src_dest;
+
+	for (size_t i = 0; i < num_rows; i++) {
+		src_dest = &cells[i][column].content;
+		if (!*src_dest) {
+			continue;
+		}
+		in = strtod(*src_dest, &tail);
+		if (*tail) {
+			continue;
+		}
+		if (callback) {
+			out = (long long) callback(in);
+		} else {
+			out = (long long) in;
+		}
+		free(*src_dest);
+		asprintf(src_dest, "%lld", out);
+	}
+	return 0;
+}
+
+double callback_time(double in) 
+{
+	return ((in - 25569) * 86400);
+}
+
 int sheet::excel_date_to_unix(size_t column)
 {
-	double in;
-	time_t out;
+	return double_to_int(column, callback_time);
+}
+
+int sheet::exponential_to_int(size_t column)
+{
+	int out;
 	char *tail;
 	char **src_dest;
 
@@ -72,23 +107,24 @@ int sheet::excel_date_to_unix(size_t column)
 		if (!src_dest) {
 			continue;
 		}
-		in = strtod(*src_dest, &tail);
+		out = strtod(*src_dest, &tail);
 		if (*tail) {
 			continue;
 		}
-		out = (time_t) ((in - 25569) * 86400);
+		//out = (time_t) ((in - 25569) * 86400);
 		free(*src_dest);
 		asprintf(src_dest, "%lld", out);
 	}
 	return 0;
 }
 
+
 cell_e sheet::column_type(size_t column)
 {
 	cell_e to_ret;
 	cell *cur;
 
-	//printf("Column: %s\n", cells[0][column].content);
+	printf("Column: %s\n", cells[0][column].content);
 	to_ret = cells[1][column].type;
 	for (size_t i = 2; i < num_rows; i++) {
 		cur = &cells[i][column];
@@ -96,7 +132,8 @@ cell_e sheet::column_type(size_t column)
 			to_ret = (cell_e) ((int) to_ret | (int) cur->type);
 		}
 	}
-	/*
+	
+	///*
 	printf("Type: ");
 	switch (to_ret) {
 		case CE_NONE:
@@ -114,7 +151,28 @@ cell_e sheet::column_type(size_t column)
 		default:
 			throw 2;
 	}
-	*/
+	//*/
 
 	return to_ret;
+}
+
+int sheet::rename(const char *to, const char *target)
+{
+	char **cur = 0x0;
+	for (size_t j = 0; j < num_columns; j++) {
+		if (!strcmp(target, cells[0][j].content)) {
+			cur = &cells[0][j].content;
+		}
+	}
+	if (!cur) {
+		return -1;
+	}
+
+	free(*cur);
+
+	asprintf(cur, "%s", to);
+
+	printf("Renamed %s to %s\n", target, *cur);
+
+	return 0;
 }

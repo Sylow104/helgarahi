@@ -16,6 +16,8 @@ int main(int argc, const char *argv[])
 	for (size_t j = 0; j < test->num_columns; j++) {
 		test->column_type(j);
 	}
+	test->rename("Internal Code", "Code");
+	test->print_header();
 	delete test;
 	delete best;
 	return 0;
