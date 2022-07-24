@@ -1,9 +1,9 @@
 build/**
 *.*
-!*.cpp
-!*.c
-!*.h
-!*.hpp
+!src/*.cpp
+!src/*.c
+!include/*.h
+!include/*.hpp
 !CMakeLists.txt
 !LICENSE
 !README.md
