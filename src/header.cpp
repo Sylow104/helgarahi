@@ -39,6 +39,11 @@ void h_entry::print()
 	}
 }
 
+const char *h_entry::column()
+{
+	return (const char *) _column;
+}
+
 
 header::header(xmlNodePtr node)
 {

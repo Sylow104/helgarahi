@@ -18,16 +18,17 @@ class cell
 	~cell();
 	
 	const char *get();
-	int init(xmlNodePtr node, h_entry *col);
-	cell *next = 0x0;
+	virtual int init(xmlNodePtr node);
+	//int init(xmlNodePtr node, h_entry *col);
+	cell *down = 0x0;
 
 	protected:
-	
-	void set(const char *to_use);
+	int set(xmlNodePtr node);
+	//void set(const char *to_use);
 
 	private:
-	h_entry *header_col;
-	cell_e type;
+	//h_entry *header_col;
+	//cell_e type;
 	char *contents = 0x0;
 	
 };

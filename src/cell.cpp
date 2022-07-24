@@ -13,6 +13,22 @@ cell::~cell()
 	}
 }
 
+int cell::init(xmlNodePtr node)
+{
+	return 0;
+}
+
+int cell::set(xmlNodePtr node)
+{
+	if (!node->content) {
+		return 1;
+	}
+
+	contents = strdup((char *) node->content);
+	return 0;
+}
+
+/*
 int cell::init(xmlNodePtr node, h_entry *col)
 {
 	header_col = (h_entry *) col;
@@ -60,3 +76,4 @@ void cell::set(const char *to_use)
 
 	return;
 }
+*/
