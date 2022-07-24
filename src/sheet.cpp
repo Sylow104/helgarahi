@@ -38,7 +38,7 @@ sheet::sheet(const char *xml_buffer, uint64_t size)
 		}
 		row_data = search_layer(row_data->next, "row");
 	}
-	header = cells[i];
+	header = cells[0];
 
 	xmlFreeDoc(root);
 }
@@ -55,6 +55,6 @@ sheet::~sheet()
 void sheet::print_header()
 {
 	for (size_t j = 0; j < num_columns; j++) {
-		printf("%s\n", cells[0][j].content);
+		printf("%s\n", header[j].content);
 	}
 }
