@@ -13,6 +13,9 @@ int main(int argc, const char *argv[])
 	//test->print_column(1);
 	//auto rest = (*test)[0][0];
 	test->print_header();
+	for (size_t j = 0; j < test->num_columns; j++) {
+		test->column_type(j);
+	}
 	delete test;
 	delete best;
 	return 0;
