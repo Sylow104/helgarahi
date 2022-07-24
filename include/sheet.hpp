@@ -15,4 +15,6 @@ struct sheet
 
 	void print(bool row, size_t index);
 	void print_header();
+	int excel_date_to_unix(size_t column);
+	cell_e column_type(size_t column);
 };

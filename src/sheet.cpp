@@ -1,4 +1,5 @@
 #include "sheet.hpp"
+#include <string.h>
 
 sheet::sheet(const char *xml_buffer, uint64_t size)
 {
@@ -57,4 +58,63 @@ void sheet::print_header()
 	for (size_t j = 0; j < num_columns; j++) {
 		printf("%s\n", header[j].content);
 	}
+}
+
+int sheet::excel_date_to_unix(size_t column)
+{
+	double in;
+	time_t out;
+	char *tail;
+	char **src_dest;
+
+	for (size_t i = 0; i < num_rows; i++) {
+		src_dest = &cells[i][column].content;
+		if (!src_dest) {
+			continue;
+		}
+		in = strtod(*src_dest, &tail);
+		if (*tail) {
+			continue;
+		}
+		out = (time_t) ((in - 25569) * 86400);
+		free(*src_dest);
+		asprintf(src_dest, "%lld", out);
+	}
+	return 0;
+}
+
+cell_e sheet::column_type(size_t column)
+{
+	cell_e to_ret;
+	cell *cur;
+
+	//printf("Column: %s\n", cells[0][column].content);
+	to_ret = cells[1][column].type;
+	for (size_t i = 2; i < num_rows; i++) {
+		cur = &cells[i][column];
+		if (cur->type) {
+			to_ret = (cell_e) ((int) to_ret | (int) cur->type);
+		}
+	}
+	/*
+	printf("Type: ");
+	switch (to_ret) {
+		case CE_NONE:
+			printf("None\n");
+			break;
+		case CE_NUM:
+			printf("Number\n");
+			break;
+		case CE_TEXT:
+			printf("Text\n");
+			break;
+		case CE_MIXED:
+			printf("Mixed\n");
+			break;
+		default:
+			throw 2;
+	}
+	*/
+
+	return to_ret;
 }
