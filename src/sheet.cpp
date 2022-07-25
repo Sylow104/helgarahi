@@ -98,24 +98,7 @@ int sheet::excel_date_to_unix(size_t column)
 
 int sheet::exponential_to_int(size_t column)
 {
-	int out;
-	char *tail;
-	char **src_dest;
-
-	for (size_t i = 0; i < num_rows; i++) {
-		src_dest = &cells[i][column].content;
-		if (!src_dest) {
-			continue;
-		}
-		out = strtod(*src_dest, &tail);
-		if (*tail) {
-			continue;
-		}
-		//out = (time_t) ((in - 25569) * 86400);
-		free(*src_dest);
-		asprintf(src_dest, "%lld", out);
-	}
-	return 0;
+	return double_to_int(column, 0x0);
 }
 
 
