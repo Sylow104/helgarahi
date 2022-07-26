@@ -24,6 +24,7 @@ make install ;
 ## short term todo
 - add csv support
 - add merge function for tables
+- add header/headerless option
 
 ## long term todo
 - rewrite to C from C++ for full portability

@@ -1,6 +1,8 @@
 #include "sheet.hpp"
 #include <string.h>
 
+bool has_header = false;
+
 sheet::sheet(const char *xml_buffer, uint64_t size)
 {
 	xmlDocPtr root = xmlParseMemory(xml_buffer, size);
@@ -39,7 +41,9 @@ sheet::sheet(const char *xml_buffer, uint64_t size)
 		}
 		row_data = search_layer(row_data->next, "row");
 	}
-	header = cells[0];
+	if (has_header) {
+		header = cells[0];
+	}
 
 	xmlFreeDoc(root);
 }
@@ -55,6 +59,9 @@ sheet::~sheet()
 
 void sheet::print_header()
 {
+	if (!has_header) {
+		return;
+	}
 	for (size_t j = 0; j < num_columns; j++) {
 		printf("%s\n", header[j].content);
 	}
@@ -109,10 +116,14 @@ cell_e sheet::column_type(size_t column)
 {
 	cell_e to_ret;
 	cell *cur;
-
-	printf("Column: %s\n", cells[0][column].content);
-	to_ret = cells[1][column].type;
-	for (size_t i = 2; i < num_rows; i++) {
+	size_t i;
+	if (has_header) {
+		i = 1;
+	} else {
+		i = 0;
+	}
+	to_ret = cells[i][column].type;
+	for (++i; i < num_rows; i++) {
 		cur = &cells[i][column];
 		if (cur->type) {
 			to_ret = (cell_e) ((int) to_ret | (int) cur->type);
@@ -120,7 +131,6 @@ cell_e sheet::column_type(size_t column)
 	}
 	
 	///*
-	printf("Type: ");
 	switch (to_ret) {
 		case CE_NONE:
 			printf("None\n");
@@ -164,6 +174,7 @@ int sheet::rename(const char *to, const char *label)
 ssize_t sheet::find_header(const char *label)
 {
 	ssize_t index = 0;
+	char *buffer;
 	for (size_t i = 0; i < num_columns; i++) {
 		if (!strcmp(header[i].content, label)) {
 			return i;
