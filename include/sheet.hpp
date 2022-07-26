@@ -15,12 +15,16 @@ struct sheet
 
 	void print(bool row, size_t index);
 	void print_header();
-	int excel_date_to_unix(size_t column);
-	int exponential_to_int(size_t column);
 	cell_e column_type(size_t column);
 
 	int rename(const char *to, const char *target);
 
+	// find and replace
+	
+	int excel_date_to_unix(const char *label);
+	int exponential_to_int(const char *label);
+
 	private:
-	int double_to_int(size_t column, double (callback)(double));
+	int double_to_int(const char *label, double (callback)(double));
+	ssize_t find_header(const char *label);
 };

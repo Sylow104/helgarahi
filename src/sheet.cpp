@@ -60,14 +60,19 @@ void sheet::print_header()
 	}
 }
 
-int sheet::double_to_int(size_t column, double (callback)(double)) {
+int sheet::double_to_int(const char *label, double (callback)(double)) {
 	double in;
 	long long out;
 	char *tail;
 	char **src_dest;
+	ssize_t target = find_header(label);
+
+	if (target < 0) {
+		return -1;
+	}
 
 	for (size_t i = 0; i < num_rows; i++) {
-		src_dest = &cells[i][column].content;
+		src_dest = &cells[i][target].content;
 		if (!*src_dest) {
 			continue;
 		}
@@ -91,14 +96,14 @@ double callback_time(double in)
 	return ((in - 25569) * 86400);
 }
 
-int sheet::excel_date_to_unix(size_t column)
+int sheet::excel_date_to_unix(const char *label)
 {
-	return double_to_int(column, callback_time);
+	return double_to_int(label, callback_time);
 }
 
-int sheet::exponential_to_int(size_t column)
+int sheet::exponential_to_int(const char *label)
 {
-	return double_to_int(column, 0x0);
+	return double_to_int(label, 0x0);
 }
 
 
@@ -139,17 +144,15 @@ cell_e sheet::column_type(size_t column)
 	return to_ret;
 }
 
-int sheet::rename(const char *to, const char *target)
+int sheet::rename(const char *to, const char *label)
 {
-	char **cur = 0x0;
-	for (size_t j = 0; j < num_columns; j++) {
-		if (!strcmp(target, cells[0][j].content)) {
-			cur = &cells[0][j].content;
-		}
-	}
-	if (!cur) {
+	char **cur;
+	ssize_t target = find_header(label);
+	if (target < 0) {
 		return -1;
 	}
+
+	cur = &cells[target]->content;
 
 	free(*cur);
 
@@ -158,4 +161,16 @@ int sheet::rename(const char *to, const char *target)
 	printf("Renamed %s to %s\n", target, *cur);
 
 	return 0;
+}
+
+ssize_t sheet::find_header(const char *label)
+{
+	ssize_t index = 0;
+	for (size_t i = 0; i < num_columns; i++) {
+		if (!strcmp(header[i].content, label)) {
+			return i;
+		}
+	}
+
+	return -1;
 }
