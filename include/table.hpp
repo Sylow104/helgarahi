@@ -17,7 +17,6 @@ struct column_t
 	size_t index;
 	cell_e type;
 	bool primary_key = false;
-	table *src;
 };
 
 struct table : protected sheet
@@ -25,7 +24,6 @@ struct table : protected sheet
 	table(const char *name, const char *xml_buffer, uint64_t size);
 	~table();
 
-	int add_column(const char *target, table *src, transform_e flags);
 	int add_column(const char *target, transform_e flags);
 	int import_schema(sqlite3 *db);
 	int import_data(sqlite3 *db);
