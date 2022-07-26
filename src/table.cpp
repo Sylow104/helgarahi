@@ -1,6 +1,7 @@
 #include "table.hpp"
 #include <string.h>
-#include <sqlite3.h>
+#include <stdlib.h>
+
 
 table::table(const char *name, const char *xml_buffer, uint64_t size) :
 	sheet(xml_buffer, size)
@@ -30,54 +31,113 @@ int table::add_column(const char *target, transform_e in_flags)
 			columns[num_selected].type = CE_TEXT;
 			break;
 	}
-	num_selected++;
+	
 
 	switch (in_flags) {
 		case T_IS_DATE:
-			return excel_date_to_unix(index);
+			excel_date_to_unix(index);
 		case T_IS_NUMBER:
-			return exponential_to_int(index);
-		case T_NONE: 
+			exponential_to_int(index);
+		case T_PRIMARY_KEY:
+			columns[num_selected].primary_key = true;
 		default:
 			break;
 	}
+	num_selected++;
 	
 	return 0;
 }
 
-char *table::create()
+int table::import_schema(sqlite3 *db)
 {
-	char *to_ret = 0x0;
+	sqlite3_stmt *stmt;
+	char buffer[128];
 	if (num_selected < 1) {
-		return to_ret;
+		return -1;
 	}
+	int primary_key_index = -1;
 
-	to_ret = new char[4096];
-
-	strcpy(to_ret, "create table ");
-	strcat(to_ret, name);
-	strcat(to_ret, " (");
+	strcpy(buffer, "create table if not exists ");
+	strcat(buffer, name);
+	strcat(buffer, " (");
 	for (size_t i = 0; i < num_selected; i++) {
 		cell *cur = (cell *) &header[columns[i].index];
-		strcat(to_ret, cur->content);
+		strcat(buffer, cur->content);
 		switch (columns[i].type) {
 			case CE_NONE:
 			case CE_TEXT:
 			case CE_MIXED:
-				strcat(to_ret, " text");
+				strcat(buffer, " text");
 				break;
 			case CE_NUM:
-				strcat(to_ret, " int");
+				strcat(buffer, " int");
 				break;
 			default:
 				throw 1;
 		}
+		if (columns[i].primary_key) {
+			primary_key_index = columns[i].index;
+		}
 		if (i + 1 < num_selected) {
-			strcat(to_ret, ", ");
+			strcat(buffer, ", ");
 		}
 	}
-	strcat(to_ret, ");");
-	
-	return to_ret;
+	if (primary_key_index > -1) {
+		strcat(buffer, ", primary key (");
+		strcat(buffer, header[primary_key_index].content);
+		strcat(buffer, ")");
+	}
+	strcat(buffer, ");");
+#ifndef NDEBUG
+	printf("Create sql: %s\n", buffer);
+#endif
+	return sqlite3_exec(db, buffer, 0x0, 0x0, 0x0); 
 }
-	
+
+int table::import_data(sqlite3 *db)
+{
+	char buffer[512];
+	sqlite3_stmt *stmt;
+	int ret_code = 0;
+
+	strcpy(buffer, "insert into ");
+	strcat(buffer, name);
+	strcat(buffer, " values (");
+	for (size_t j = 0; j < num_selected; j++) {
+		strcat(buffer, "?");
+		if (j + 1 < num_selected) {
+			strcat(buffer, ",");
+		}
+	}
+	strcat(buffer, ");");
+	ret_code = sqlite3_prepare(db, buffer, -1, &stmt, 0x0);
+
+	if (ret_code) {
+		return ret_code;
+	}
+	for (size_t i = 1; i < num_rows; i++) {
+		cell *row = cells[i];
+		for (size_t j = 0; j < num_selected; j++) {
+			ret_code = sqlite3_bind_text(stmt, j + 1, 
+				row[columns[j].index].content, -1, 0x0);
+			if (ret_code) {
+				goto exit;
+			}
+		}
+#ifndef NDEBUG
+		printf("Current SQL Statement: %s\n", 
+				sqlite3_expanded_sql(stmt));
+#endif
+		ret_code = sqlite3_step(stmt);
+		if (ret_code != SQLITE_DONE) {
+			// usually primary key constraint error
+			printf("PKey: constraint error on row %d\n", i);
+		} 
+		sqlite3_reset(stmt);
+		sqlite3_clear_bindings(stmt);
+	};
+
+exit:
+	sqlite3_finalize(stmt);
+	return ret_code;
+}

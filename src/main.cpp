@@ -4,6 +4,11 @@
 int main(int argc, const char *argv[])
 {
 	xlsx file;
+	sqlite3 *db;
+	if (sqlite3_open("fish.db", &db)) {
+		return -1;
+	}
+	sqlite3_extended_result_codes(db, 1);
 
 	file.open(argv[1]);
 	file.analyze();
@@ -13,11 +18,13 @@ int main(int argc, const char *argv[])
 
 	test->add_column("Code", T_NONE);
 	test->add_column("Appointment", T_IS_DATE);
-
-	char *create_sql = test->create();
-	printf("SQL Statement created: %s\n", create_sql);
-	delete[] create_sql;
+	if (test->import_schema(db)) {
+		exit(-1);
+	}
+	if (test->import_data(db)) {
+		exit(-2);
+	}
 	delete test;
 	delete best;
-	return 0;
+	return sqlite3_close(db);
 }
