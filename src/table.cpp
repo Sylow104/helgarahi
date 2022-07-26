@@ -91,7 +91,10 @@ int table::import_schema(sqlite3 *db)
 #ifndef NDEBUG
 	printf("Create sql: %s\n", buffer);
 #endif
-	return sqlite3_exec(db, buffer, 0x0, 0x0, 0x0); 
+	sqlite3_prepare(db, buffer, -1, &stmt, 0x0);
+	sqlite3_step(stmt);
+	sqlite3_finalize(stmt);
+	return 0; 
 }
 
 int table::import_data(sqlite3 *db)
@@ -99,6 +102,7 @@ int table::import_data(sqlite3 *db)
 	char buffer[512];
 	sqlite3_stmt *stmt;
 	int ret_code = 0;
+	char *debug = 0x0;
 
 	strcpy(buffer, "insert into ");
 	strcat(buffer, name);
@@ -115,6 +119,7 @@ int table::import_data(sqlite3 *db)
 	if (ret_code) {
 		return ret_code;
 	}
+
 	for (size_t i = 1; i < num_rows; i++) {
 		cell *row = cells[i];
 		for (size_t j = 0; j < num_selected; j++) {
@@ -125,8 +130,12 @@ int table::import_data(sqlite3 *db)
 			}
 		}
 #ifndef NDEBUG
+		debug = sqlite3_expanded_sql(stmt);
 		printf("Current SQL Statement: %s\n", 
-				sqlite3_expanded_sql(stmt));
+				debug);
+		if (debug) {
+			sqlite3_free(debug);
+		}
 #endif
 		ret_code = sqlite3_step(stmt);
 		if (ret_code != SQLITE_DONE) {
@@ -137,6 +146,7 @@ int table::import_data(sqlite3 *db)
 		sqlite3_clear_bindings(stmt);
 	};
 
+	
 exit:
 	sqlite3_finalize(stmt);
 	return ret_code;
