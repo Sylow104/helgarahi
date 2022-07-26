@@ -1,3 +1,5 @@
+#include <libxml2/libxml/parser.h>
+#define _INTERNAL_
 #include "cell.hpp"
 #include <string.h>
 

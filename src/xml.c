@@ -1,6 +1,7 @@
+#include <libxml2/libxml/parser.h>
+#define _INTERNAL_
 #include "xml.h"
 #include <math.h>
-
 
 xmlNodePtr search_children(xmlNodePtr node, const char *name)
 {

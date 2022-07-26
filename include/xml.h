@@ -2,7 +2,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <libxml/parser.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+#ifndef _INTERNAL_
+struct _xmlNode;
+typedef struct _xmlNode xmlNode;
+typedef xmlNode *xmlNodePtr;
+#endif
 
 struct cell_coord
 {

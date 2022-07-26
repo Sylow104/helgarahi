@@ -1,5 +1,6 @@
 #include "sheet.hpp"
 #include <string.h>
+#include <libxml2/libxml/parser.h>
 
 bool has_header = false;
 

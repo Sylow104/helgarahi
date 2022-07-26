@@ -1,7 +1,7 @@
 #include "table.hpp"
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 
 table::table(const char *name, const char *xml_buffer, uint64_t size) :
 	sheet(xml_buffer, size)
