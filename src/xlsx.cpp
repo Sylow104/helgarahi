@@ -70,14 +70,14 @@ int xlsx::analyze()
 
 
 
-sheet *xlsx::get_sheet(size_t index)
+table *xlsx::get_table(const char *name, size_t index)
 {
 	zip_stat_t stat;
 	zip_file_t *raw_sheet;
 	int ret_code = 0;
 	char path[128];
 	char *xml_raw;
-	sheet *to_ret = 0x0;
+	table *to_ret = 0x0;
 	if (index < 1 || index > num_sheets) {
 		goto exit;
 	}
@@ -93,7 +93,7 @@ sheet *xlsx::get_sheet(size_t index)
 
 	zip_fread(raw_sheet, xml_raw, stat.size);
 	zip_fclose(raw_sheet);
-	to_ret = new sheet{xml_raw, stat.size};
+	to_ret = new table{name ,xml_raw, stat.size};
 	delete[] xml_raw;
 exit:
 	return to_ret;

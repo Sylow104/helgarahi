@@ -1,5 +1,5 @@
 #pragma once
-#include "sheet.hpp"
+#include "table.hpp"
 #include <zip.h>
 
 class xlsx
@@ -10,7 +10,7 @@ class xlsx
 
 	int open(const char *filename);
 	int analyze();
-	sheet *get_sheet(size_t index);
+	table *get_table(const char *name, size_t index);
 
 	protected:
 
