@@ -60,25 +60,21 @@ void sheet::print_header()
 	}
 }
 
-int sheet::double_to_int(const char *label, double (callback)(double)) {
+int sheet::double_to_int(size_t index, double (callback)(double)) {
 	double in;
 	long long out;
 	char *tail;
 	char **src_dest;
-	ssize_t target = find_header(label);
-
-	if (target < 0) {
-		return -1;
-	}
 
 	for (size_t i = 0; i < num_rows; i++) {
-		src_dest = &cells[i][target].content;
+		src_dest = &cells[i][index].content;
 		if (!*src_dest) {
 			continue;
 		}
 		in = strtod(*src_dest, &tail);
 		if (*tail) {
 			continue;
+			// may need to throw here
 		}
 		if (callback) {
 			out = (long long) callback(in);
@@ -91,19 +87,21 @@ int sheet::double_to_int(const char *label, double (callback)(double)) {
 	return 0;
 }
 
+
+
 double callback_time(double in) 
 {
 	return ((in - 25569) * 86400);
 }
 
-int sheet::excel_date_to_unix(const char *label)
+int sheet::excel_date_to_unix(size_t index)
 {
-	return double_to_int(label, callback_time);
+	return double_to_int(index, callback_time);
 }
 
-int sheet::exponential_to_int(const char *label)
+int sheet::exponential_to_int(size_t index)
 {
-	return double_to_int(label, 0x0);
+	return double_to_int(index, 0x0);
 }
 
 

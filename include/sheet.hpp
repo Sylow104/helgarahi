@@ -21,10 +21,12 @@ struct sheet
 
 	// find and replace
 	
-	int excel_date_to_unix(const char *label);
-	int exponential_to_int(const char *label);
+	int excel_date_to_unix(size_t index);
+	int exponential_to_int(size_t index);
+
+	protected:
+	ssize_t find_header(const char *label);
 
 	private:
-	int double_to_int(const char *label, double (callback)(double));
-	ssize_t find_header(const char *label);
+	int double_to_int(size_t index, double(callback)(double));
 };
