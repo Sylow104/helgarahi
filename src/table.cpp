@@ -16,6 +16,11 @@ table::~table()
 	free(this->name);
 }
 
+int table::add_column(const char *target, table *src, transform_e in_flags)
+{
+	return 0;
+}
+
 int table::add_column(const char *target, transform_e in_flags)
 {
 	ssize_t index = find_header(target);
@@ -25,6 +30,7 @@ int table::add_column(const char *target, transform_e in_flags)
 	}
 	columns[num_selected].index = index;
 	columns[num_selected].type = column_type(index);
+	columns[num_selected].src = this;
 	switch (columns[num_selected].type) {
 		case CE_MIXED:
 		case CE_NONE:
