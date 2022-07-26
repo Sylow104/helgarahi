@@ -10,8 +10,6 @@ enum transform_e
 	T_PRIMARY_KEY
 };
 
-struct table;
-
 struct column_t
 {
 	size_t index;
