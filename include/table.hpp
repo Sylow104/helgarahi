@@ -29,8 +29,6 @@ struct table : protected sheet
 	int import_data(sqlite3 *db);
 	
 	private:
-
-	char *create();
 	column_t *columns;
 	size_t num_selected = 0;
 	char *name;
