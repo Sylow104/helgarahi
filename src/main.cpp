@@ -8,16 +8,15 @@ int main(int argc, const char *argv[])
 	file.open(argv[1]);
 	file.analyze();
 
-	sheet *test = file.get_sheet(1);
-	sheet *best = file.get_sheet(2);
-	//test->print_column(1);
-	//auto rest = (*test)[0][0];
-	test->print_header();
-	for (size_t j = 0; j < test->num_columns; j++) {
-		test->column_type(j);
-	}
-	test->rename("Internal Code", "Code");
-	test->print_header();
+	table *test = file.get_table("test", 1);
+	table *best = file.get_table("best", 2);
+
+	test->add_column("Code", T_NONE);
+	test->add_column("Appointment", T_IS_DATE);
+
+	char *create_sql = test->create();
+	printf("SQL Statement created: %s\n", create_sql);
+	delete[] create_sql;
 	delete test;
 	delete best;
 	return 0;
