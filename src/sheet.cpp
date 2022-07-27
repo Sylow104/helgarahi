@@ -2,8 +2,6 @@
 #include <string.h>
 #include <libxml2/libxml/parser.h>
 
-bool has_header = false;
-
 sheet::sheet(const char *xml_buffer, uint64_t size)
 {
 	xmlDocPtr root = xmlParseMemory(xml_buffer, size);
@@ -42,9 +40,7 @@ sheet::sheet(const char *xml_buffer, uint64_t size)
 		}
 		row_data = search_layer(row_data->next, "row");
 	}
-	if (has_header) {
-		header = cells[0];
-	}
+	header = cells[0];
 
 	xmlFreeDoc(root);
 }
@@ -60,9 +56,6 @@ sheet::~sheet()
 
 void sheet::print_header()
 {
-	if (!has_header) {
-		return;
-	}
 	for (size_t j = 0; j < num_columns; j++) {
 		printf("%s\n", header[j].content);
 	}
@@ -117,21 +110,16 @@ cell_e sheet::column_type(size_t column)
 {
 	cell_e to_ret;
 	cell *cur;
-	size_t i;
-	if (has_header) {
-		i = 1;
-	} else {
-		i = 0;
-	}
-	to_ret = cells[i][column].type;
-	for (++i; i < num_rows; i++) {
+	size_t i = 1;
+	to_ret = cells[i++][column].type;
+	for (i; i < num_rows; i++) {
 		cur = &cells[i][column];
 		if (cur->type) {
 			to_ret = (cell_e) ((int) to_ret | (int) cur->type);
 		}
 	}
-	
-	///*
+
+#ifndef NDEBUG
 	switch (to_ret) {
 		case CE_NONE:
 			printf("None\n");
@@ -148,7 +136,7 @@ cell_e sheet::column_type(size_t column)
 		default:
 			throw 2;
 	}
-	//*/
+#endif
 
 	return to_ret;
 }
