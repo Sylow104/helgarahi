@@ -16,13 +16,72 @@ table::~table()
 	free(this->name);
 }
 
+ssize_t table::search(const char *target)
+{
+	size_t i;
+	for (i = 0; i < num_selected; i++) {
+		if (!strcmp(header[columns[i].index].content, target)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int table::edit_column(const char *target, transform_e in_flags)
+{
+	ssize_t ret_code = search(target);
+	if (ret_code < 0) {
+		return -1;
+	}
+	return edit_column(ret_code, in_flags);
+}
+
+int table::edit_column(size_t index, transform_e in_flags)
+{
+	int ret_code = 0;
+	if (index < 0 || index > num_selected) {
+		return -1;
+	}
+	switch (in_flags) {
+		case T_IS_DATE:
+			ret_code = excel_date_to_unix(columns[index].index);
+			break;
+		case T_IS_NUMBER:
+			ret_code = exponential_to_int(columns[index].index);
+			break;
+		case T_PRIMARY_KEY:
+			columns[index].primary_key = true;
+		default:
+			break;
+	}
+	return ret_code;
+}
+
+int table::add_all()
+{
+	size_t i;
+	int ret_code = 0;
+	for (i = 0; i < num_columns; i++) {
+		ret_code = add_column(i, T_NONE);
+		if (ret_code) {
+			break;
+		}
+	}
+	return ret_code;
+}
+
 int table::add_column(const char *target, transform_e in_flags)
 {
 	ssize_t index = find_header(target);
-
 	if (index < 0) {
 		return -1;
-	}
+	} 
+	return add_column(index, in_flags);
+}
+
+int table::add_column(size_t index, transform_e in_flags)
+{
+	int ret_code;
 	columns[num_selected].index = index;
 	columns[num_selected].type = column_type(index);
 	switch (columns[num_selected].type) {
@@ -31,27 +90,18 @@ int table::add_column(const char *target, transform_e in_flags)
 			columns[num_selected].type = CE_TEXT;
 			break;
 	}
-	
 
-	switch (in_flags) {
-		case T_IS_DATE:
-			excel_date_to_unix(index);
-		case T_IS_NUMBER:
-			exponential_to_int(index);
-		case T_PRIMARY_KEY:
-			columns[num_selected].primary_key = true;
-		default:
-			break;
-	}
+	ret_code = edit_column(num_selected, in_flags);
+	
 	num_selected++;
 	
-	return 0;
+	return ret_code;
 }
 
 int table::import_schema(sqlite3 *db)
 {
 	sqlite3_stmt *stmt;
-	char buffer[128];
+	char buffer[4096];
 	if (num_selected < 1) {
 		return -1;
 	}
@@ -62,7 +112,9 @@ int table::import_schema(sqlite3 *db)
 	strcat(buffer, " (");
 	for (size_t i = 0; i < num_selected; i++) {
 		cell *cur = (cell *) &header[columns[i].index];
+		strcat(buffer,"\'");
 		strcat(buffer, cur->content);
+		strcat(buffer,"\'");
 		switch (columns[i].type) {
 			case CE_NONE:
 			case CE_TEXT:
@@ -99,7 +151,7 @@ int table::import_schema(sqlite3 *db)
 
 int table::import_data(sqlite3 *db)
 {
-	char buffer[512];
+	char buffer[4096];
 	sqlite3_stmt *stmt;
 	int ret_code = 0;
 	char *debug = 0x0;
