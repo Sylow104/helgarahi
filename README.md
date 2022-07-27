@@ -25,6 +25,7 @@ make install ;
 - add csv support
 - add merge function for tables
 - add header/headerless option
+- rewrite using sax parser
 
 ## long term todo
 - rewrite to C from C++ for full portability
