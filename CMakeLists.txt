@@ -10,3 +10,6 @@ target_include_directories(helgarahi PRIVATE /usr/include/libxml2)
 target_link_libraries(helgarahi sqlite3 csv xml2 zip)
 install(TARGETS helgarahi)
 install(DIRECTORY include/ DESTINATION include/${PROJECT_NAME})
+
+set(CPACK_GENERATOR "RPM")
+include(CPack)
