@@ -4,7 +4,6 @@ xml_t *xml_load(const char *file, zip_t *zip)
 {
 	xml_t *to_ret;
 	zip_file_t *to_dump;
-	zip_uint64_t read_size;
 	zip_stat_t stat;
 	int rc;
 
@@ -28,11 +27,12 @@ xml_t *xml_load(const char *file, zip_t *zip)
 		goto on_fail;
 	}
 
-	read_size = zip_fread(to_dump, to_ret->buffer, stat.size);
+	to_ret->size = zip_fread(to_dump, to_ret->buffer, stat.size);
 	zip_fclose(to_dump);
-	if (read_size != stat.size) {
+	if (to_ret->size != stat.size) {
 		goto on_fail;
 	}
+
 
 exit:
 	return to_ret;

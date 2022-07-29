@@ -8,17 +8,31 @@ extern "C" {
 #include <zip.h>
 #include <sqlite3.h>
 #include <csv.h>
+#include <expat.h>
 
 // forward delcaration for parent structure
 typedef struct row row_t;
 typedef struct sheet sheet_t;
 typedef struct xlsx xlsx_t;
 
+// tags and functions related to it
+typedef struct tag
+{
+	char *name;
+	int (*callback)(void *, void *);
+} tag_t;
+
+typedef struct tag_callback
+{
+	size_t num_tag;
+	tag_t *tags;
+} tag_callback_t; 
+
 // xml def and functions
 typedef struct xml
 {
 	char *buffer;
-	size_t size;
+	zip_uint64_t size;
 } xml_t;
 xml_t *xml_load(const char *file, zip_t *zip);
 int xml_free(xml_t *obj);
