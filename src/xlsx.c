@@ -14,6 +14,7 @@ xlsx_t *xlsx_open(const char *filename)
 		free(to_ret);
 		goto exit;
 	}
+	// generate sheets
 
 exit:
 	return to_ret;

@@ -20,6 +20,8 @@ typedef struct xml
 	char *buffer;
 	size_t size;
 } xml_t;
+xml_t *xml_load(const char *file, zip_t *zip);
+int xml_free(xml_t *obj);
 
 
 // cell def and functions
@@ -46,9 +48,16 @@ typedef struct sheet
 	size_t num_cols;
 	xlsx_t *parent;
 } sheet_t;
-
+sheet_t *sheet_generate(zip_t *xlsx_file);
 int sheet_destroy(sheet_t *obj);
 
+
+typedef struct workbook
+{
+	sheet_t *sheets;
+	size_t num_sheets;
+} workbook_t;
+workbook_t *workbook_generate(xlsx_t *target);
 
 // xlsx def and functions
 typedef struct xlsx
