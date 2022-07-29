@@ -5,9 +5,12 @@ size_t workbook_num_sheets(xml_t *raw)
 {
 	XML_Parser parser = XML_ParserCreate(raw->buffer);
 	size_t num_sheets;
+	enum XML_Status status;
 	if (!parser) {
 		return 0;
 	}
+
+	//status = XML_Parse(parser, raw->buffer, raw->size, 0);
 
 	XML_ParserFree(parser);
 	return num_sheets;
