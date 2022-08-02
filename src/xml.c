@@ -17,6 +17,7 @@ xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload)
 		to_ret = (xml_t *) malloc(sizeof(xml_t));
 		to_ret->read_size = 0;
 		to_ret->buffer_size = 0;
+		to_ret->buffer = 0x0;
 	}
 
 	if (!to_ret) {
@@ -24,6 +25,8 @@ xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload)
 	}
 
 	if (zip_stat(zip, file, 0, &stat)) {
+		printf("Unable to open %s : %s\n", file,
+			zip_error_strerror(zip_get_error(zip)));
 		goto exit;
 	}
 
