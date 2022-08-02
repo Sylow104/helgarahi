@@ -1,83 +1,69 @@
-#include <libxml2/libxml/parser.h>
-#define _INTERNAL_
-#include "xml.h"
-#include <math.h>
+#include "helgarahi.h"
 
-xmlNodePtr search_children(xmlNodePtr node, const char *name)
+xml_t *xml_load(const char *file, zip_t *zip)
 {
-	xmlNodePtr to_ret = 0x0;
-	xmlNodePtr cur;
+	xml_t *to_ret;
+	zip_file_t *to_dump;
+	zip_stat_t stat;
+	int rc;
 
-	cur = node;
-	while (cur) {
-		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
-			to_ret = cur;
-			break;
-		}
-		cur = cur->children;
+	if (!(file && zip)) {
+		return 0x0;
 	}
 
+	to_ret = (xml_t *) malloc(sizeof(xml_t));
+	to_ret->read_size = 0;
+	to_ret->buffer_size = 0;
+	to_ret->buffer = 0x0;
+
+	if (!to_ret) {
+		goto exit;
+	}
+
+	if (zip_stat(zip, file, 0, &stat)) {
+		printf("Unable to open %s : %s\n", file,
+			zip_error_strerror(zip_get_error(zip)));
+		goto exit;
+	}
+
+	to_ret->buffer = (char *) 
+		malloc(sizeof(char) * (stat.size));
+	if (!to_ret->buffer) {
+		goto on_fail;
+	}
+
+	to_ret->buffer_size = stat.size;
+
+	to_dump = zip_fopen(zip, file, 0);
+	if (!to_dump) {
+		goto on_fail;
+	}
+
+	to_ret->read_size = zip_fread(to_dump, to_ret->buffer, stat.size);
+	zip_fclose(to_dump);
+	if (to_ret->read_size != stat.size) {
+		goto on_fail;
+	}
+
+exit:
 	return to_ret;
+
+on_fail:
+	if (to_ret->buffer) {
+		free(to_ret->buffer);
+	}
+	if (to_ret) {
+		free(to_ret);
+		to_ret = 0x0;
+	}
+	goto exit;
 }
 
-xmlNodePtr search_layer(xmlNodePtr layer, const char *name)
+int xml_free(xml_t *obj)
 {
-	xmlNodePtr to_ret = 0x0;
-	xmlNodePtr cur;
-
-	cur = layer;
-	while (cur) {
-		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
-			to_ret = cur;
-			break;
-		}
-		cur = cur->next;
+	if (obj->buffer) {
+		free(obj->buffer);
 	}
-
-	return to_ret;
-}
-
-int count_layer(xmlNodePtr layer, const char *name)
-{
-	xmlNodePtr cur = layer;
-	int to_ret = 0;
-	while(cur) {
-		if (!xmlStrcmp(cur->name, (xmlChar *) name)) {
-			to_ret++;
-		}
-		cur = cur->next;
-	}
-
-	return to_ret;
-}
-
-int letter_to_x(const char *region, size_t size)
-{
-	int to_ret = 0;
-	int letter_val = 0;
-
-	for (int i = size; i > 0; i--) {
-		letter_val = region[i - 1] - 'A' + 1;
-		to_ret += ((int) pow(26, size - i)) * letter_val;
-	}
-
-	return to_ret;
-}
-
-struct cell_coord cell_coordinates(const char *coordinate)
-{
-	char *ptr = (char*) coordinate;
-	int letter_count = 0;
-	char *number = (char *) coordinate;
-	struct cell_coord to_ret;
-	// check if valid
-	while (*ptr >= 'A' && *ptr <= 'Z') {
-		ptr++;
-		letter_count++;
-	}
-
-	to_ret.x = letter_to_x(coordinate, letter_count);
-	to_ret.y = strtol(ptr, 0x0, 0);
-
-	return to_ret;
+	free(obj);
+	return 0;
 }
