@@ -35,6 +35,7 @@ typedef struct xml
 	zip_uint64_t size;
 } xml_t;
 xml_t *xml_load(const char *file, zip_t *zip);
+enum XML_Status xml_parse(XML_Parser parser, xml_t *to_parse);
 int xml_free(xml_t *obj);
 
 
