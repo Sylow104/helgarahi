@@ -1,6 +1,17 @@
 #include "helgarahi.h"
 #define WORKBOOK_INFO "xl/workbook.xml"
 
+void XMLCALL workbook_start(void *data, const char *tag, const char **attr)
+{
+	return;
+}
+
+void XMLCALL workbook_end(void *data, const char *tag)
+{
+	return;
+}
+
+
 size_t workbook_num_sheets(xml_t *raw)
 {
 	XML_Parser parser = XML_ParserCreate(raw->buffer);
@@ -10,7 +21,8 @@ size_t workbook_num_sheets(xml_t *raw)
 		return 0;
 	}
 
-	//status = XML_Parse(parser, raw->buffer, raw->size, 0);
+	XML_SetElementHandler(parser, workbook_start, workbook_end);
+	status = XML_Parse(parser, raw->buffer, raw->size, 0);
 
 	XML_ParserFree(parser);
 	return num_sheets;
