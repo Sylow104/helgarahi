@@ -9,6 +9,7 @@ extern "C" {
 #include <sqlite3.h>
 #include <csv.h>
 #include <expat.h>
+#include <stdbool.h>
 
 // forward delcaration for parent structure
 typedef struct row row_t;
@@ -34,7 +35,7 @@ typedef struct xml
 	char *buffer;
 	zip_uint64_t read_size, buffer_size;
 } xml_t;
-xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload);
+xml_t *xml_load(const char *file, zip_t *zip);
 enum XML_Status xml_parse(XML_Parser parser, xml_t *to_parse);
 int xml_free(xml_t *obj);
 
@@ -42,7 +43,7 @@ int xml_free(xml_t *obj);
 // cell def and functions
 typedef struct cell
 {
-	char *contents;
+	char *content;
 } cell_t;
 
 
@@ -56,9 +57,13 @@ int row_clean(row_t *obj);
 // sheet def and functions
 typedef struct sheet
 {
-	row_t *rows;
+	cell_t *cells;
 	size_t num_rows;
 	size_t num_cols;
+	cell_t *cur_cell;
+	size_t ctr;
+	bool has_header;
+	bool is_element;
 } sheet_t;
 int sheet_generate(sheet_t *target, xml_t *raw);
 //sheet_t *sheet_generate(xml_t *raw);
@@ -70,7 +75,7 @@ typedef struct workbook
 	sheet_t *sheets;
 	size_t num_sheets;
 } workbook_t;
-workbook_t *workbook_generate(xlsx_t *target);
+int workbook_generate(xlsx_t *target);
 int workbook_clean(workbook_t *obj);
 
 // xlsx def and functions
