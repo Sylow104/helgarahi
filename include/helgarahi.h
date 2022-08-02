@@ -35,8 +35,6 @@ typedef struct sheet
 	cell_t *cells;
 	size_t num_rows;
 	size_t num_cols;
-	cell_t *cur_cell;
-	bool is_element;
 } sheet_t;
 
 typedef struct workbook
