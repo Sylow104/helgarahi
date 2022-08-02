@@ -1,6 +1,4 @@
 #include "helgarahi.h"
-#include <string.h>
-#include <stdio.h>
 
 void XMLCALL sheet_import_start(void *data, const char *tag, const char **attr)
 {
@@ -84,7 +82,6 @@ int sheet_generate(sheet_t *target, xml_t *raw)
 		abort();
 	}
 	target->cur_cell = target->cells;
-	target->ctr = 0;
 	target->is_element = false;
 	XML_ParserReset(parser, "US-ASCII");
 	XML_SetUserData(parser, target);
@@ -107,7 +104,6 @@ int sheet_clean(sheet_t *obj)
 	if (obj->cells) {
 		for (size_t i = 0; i < num_cells; i++) {
 			if (obj->cells[i].content) {
-				//printf("%p\n", obj->cells[i].content);
 				free(obj->cells[i].content);
 			}
 		}
