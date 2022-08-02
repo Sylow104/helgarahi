@@ -3,8 +3,13 @@
 
 xlsx_t *xlsx_open(const char *filename)
 {
-	xlsx_t *to_ret = (xlsx_t *)
-		malloc(sizeof(xlsx_t));
+	xlsx_t *to_ret;
+
+	if (!filename) {
+		return 0x0;
+	}
+	
+	to_ret = (xlsx_t *) malloc(sizeof(xlsx_t));
 	int zip_rc;
 	if (!to_ret) {
 		goto exit;
@@ -14,7 +19,6 @@ xlsx_t *xlsx_open(const char *filename)
 		free(to_ret);
 		goto exit;
 	}
-	// generate sheets
 
 exit:
 	return to_ret;
