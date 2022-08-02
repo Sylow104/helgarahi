@@ -16,9 +16,9 @@ void XMLCALL sheet_import_handler(void *data, const XML_Char *s, int len)
 	sheet_t *_data = (sheet_t *) data;
 	if (_data->is_element) {
 		if (len > 0) {
-			_data->cells[_data->ctr].content = strndup(s, len);
+			_data->cur_cell->content = strndup(s, len);
 		} else {
-			_data->cells[_data->ctr].content = 0x0;
+			_data->cur_cell->content = 0x0;
 		}
 		_data->is_element = false;
 	}
@@ -30,10 +30,10 @@ void XMLCALL sheet_import_end(void *data, const char *tag)
 	sheet_t *_data = (sheet_t *) data;
 	if (!strcmp(tag, "t") || !strcmp(tag, "v")) {
 		if (_data->is_element) {
-			_data->cells[_data->ctr].content = 0x0;
+			_data->cur_cell->content = 0x0;
 			_data->is_element = false;
 		}
-		_data->ctr++;
+		_data->cur_cell++;
 	}
 	return;
 }

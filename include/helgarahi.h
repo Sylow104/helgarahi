@@ -61,8 +61,6 @@ typedef struct sheet
 	size_t num_rows;
 	size_t num_cols;
 	cell_t *cur_cell;
-	size_t ctr;
-	bool has_header;
 	bool is_element;
 } sheet_t;
 int sheet_generate(sheet_t *target, xml_t *raw);
