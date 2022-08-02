@@ -20,6 +20,8 @@ xlsx_t *xlsx_open(const char *filename)
 		goto exit;
 	}
 
+	to_ret->workbook.num_sheets = 0;
+
 exit:
 	return to_ret;
 }
@@ -30,8 +32,6 @@ int xlsx_close(xlsx_t *obj)
 	if (obj->zip) {
 		rc = zip_close(obj->zip);
 	}
-	if (obj->sheets) {
-		rc = sheet_destroy(obj->sheets);
-	}
+	rc = workbook_clean(&obj->workbook);
 	return rc;
 }
