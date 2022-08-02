@@ -10,7 +10,7 @@ xlsx_t *xlsx_open(const char *filename)
 	}
 	
 	to_ret = (xlsx_t *) malloc(sizeof(xlsx_t));
-	int zip_rc;
+	int zip_rc = 0;
 	if (!to_ret) {
 		goto exit;
 	}
@@ -29,9 +29,13 @@ exit:
 int xlsx_close(xlsx_t *obj)
 {
 	int rc;
+	if (!obj) {
+		return -1;
+	}
 	if (obj->zip) {
 		rc = zip_close(obj->zip);
 	}
 	rc = workbook_clean(&obj->workbook);
+	free(obj);
 	return rc;
 }
