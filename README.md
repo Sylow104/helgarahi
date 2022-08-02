@@ -7,7 +7,7 @@ basic library for converting xlsx to sqlite3 db or csv file
 - glibc or equivalent
 - sqlite3 (for sql exporting)
 - csv (for csv exporting)
-- libxml2
+- libexpat
 - libzip
 - cmake v3.10
 
