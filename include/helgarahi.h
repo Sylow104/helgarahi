@@ -6,13 +6,13 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include <zip.h>
 #include <expat.h>
-#include <stdbool.h>
 
 // forward delcaration for parent structure
-typedef struct sheet sheet_t;
 typedef struct xlsx xlsx_t;
+
 // xml def and functions
 typedef struct xml
 {
@@ -38,8 +38,6 @@ typedef struct sheet
 	cell_t *cur_cell;
 	bool is_element;
 } sheet_t;
-int sheet_generate(sheet_t *target, xml_t *raw);
-int sheet_clean(sheet_t *obj);
 
 typedef struct workbook
 {
@@ -47,7 +45,7 @@ typedef struct workbook
 	size_t num_sheets;
 } workbook_t;
 int workbook_generate(xlsx_t *target);
-int workbook_clean(workbook_t *obj);
+
 
 // xlsx def and functions
 typedef struct xlsx
