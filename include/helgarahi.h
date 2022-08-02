@@ -4,31 +4,15 @@ extern "C" {
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stddef.h>
 #include <zip.h>
-#include <sqlite3.h>
-#include <csv.h>
 #include <expat.h>
 #include <stdbool.h>
 
 // forward delcaration for parent structure
-typedef struct row row_t;
 typedef struct sheet sheet_t;
 typedef struct xlsx xlsx_t;
-
-// tags and functions related to it
-typedef struct tag
-{
-	char *name;
-	int (*callback)(void *, void *);
-} tag_t;
-
-typedef struct tag_callback
-{
-	size_t num_tag;
-	tag_t *tags;
-} tag_callback_t; 
-
 // xml def and functions
 typedef struct xml
 {
@@ -36,7 +20,6 @@ typedef struct xml
 	zip_uint64_t read_size, buffer_size;
 } xml_t;
 xml_t *xml_load(const char *file, zip_t *zip);
-enum XML_Status xml_parse(XML_Parser parser, xml_t *to_parse);
 int xml_free(xml_t *obj);
 
 
@@ -45,14 +28,6 @@ typedef struct cell
 {
 	char *content;
 } cell_t;
-
-
-// row def and functions
-typedef struct row
-{
-	cell_t *cells;
-} row_t;
-int row_clean(row_t *obj);
 
 // sheet def and functions
 typedef struct sheet
@@ -64,9 +39,7 @@ typedef struct sheet
 	bool is_element;
 } sheet_t;
 int sheet_generate(sheet_t *target, xml_t *raw);
-//sheet_t *sheet_generate(xml_t *raw);
 int sheet_clean(sheet_t *obj);
-
 
 typedef struct workbook
 {
