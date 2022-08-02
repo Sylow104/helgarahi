@@ -1,6 +1,6 @@
 #include "helgarahi.h"
 
-xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload)
+xml_t *xml_load(const char *file, zip_t *zip)
 {
 	xml_t *to_ret;
 	zip_file_t *to_dump;
@@ -11,14 +11,10 @@ xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload)
 		return 0x0;
 	}
 
-	if (to_reload) {
-		to_ret = to_reload;
-	} else {
-		to_ret = (xml_t *) malloc(sizeof(xml_t));
-		to_ret->read_size = 0;
-		to_ret->buffer_size = 0;
-		to_ret->buffer = 0x0;
-	}
+	to_ret = (xml_t *) malloc(sizeof(xml_t));
+	to_ret->read_size = 0;
+	to_ret->buffer_size = 0;
+	to_ret->buffer = 0x0;
 
 	if (!to_ret) {
 		goto exit;
@@ -30,11 +26,13 @@ xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload)
 		goto exit;
 	}
 
-	if (to_ret->buffer_size < stat.size) {
-		to_ret->buffer = (char *) 
-			realloc(to_ret->buffer, sizeof(char) * (stat.size));
-		to_ret->buffer_size = stat.size;
+	to_ret->buffer = (char *) 
+		malloc(sizeof(char) * (stat.size));
+	if (!to_ret->buffer) {
+		goto on_fail;
 	}
+
+	to_ret->buffer_size = stat.size;
 
 	to_dump = zip_fopen(zip, file, 0);
 	if (!to_dump) {
