@@ -3,6 +3,9 @@
 #define WORKBOOK_INFO "xl/workbook.xml"
 #define WORKBOOK_SHEET "xl/worksheets/sheet%d.xml"
 
+int sheet_generate(sheet_t *target, xml_t *raw);
+int sheet_clean(sheet_t *obj);
+
 void XMLCALL workbook_start(void *data, const char *tag, const char **attr)
 {
 	size_t *_data = (size_t *) data;

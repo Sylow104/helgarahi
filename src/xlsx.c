@@ -1,6 +1,8 @@
 #include "helgarahi.h"
 #include <stdlib.h>
 
+int workbook_clean(workbook_t *obj);
+
 xlsx_t *xlsx_open(const char *filename)
 {
 	xlsx_t *to_ret;
