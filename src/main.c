@@ -9,7 +9,7 @@ int main(int argc, const char **argv)
 		exit(-1);
 	}
 
-	workbook_t *workbook = workbook_generate(to_use);
+	workbook_generate(to_use);
 
 	return xlsx_close(to_use);
 }
