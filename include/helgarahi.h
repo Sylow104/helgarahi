@@ -32,9 +32,9 @@ typedef struct tag_callback
 typedef struct xml
 {
 	char *buffer;
-	zip_uint64_t size;
+	zip_uint64_t read_size, buffer_size;
 } xml_t;
-xml_t *xml_load(const char *file, zip_t *zip);
+xml_t *xml_load(const char *file, zip_t *zip, xml_t *to_reload);
 enum XML_Status xml_parse(XML_Parser parser, xml_t *to_parse);
 int xml_free(xml_t *obj);
 
@@ -43,7 +43,6 @@ int xml_free(xml_t *obj);
 typedef struct cell
 {
 	char *contents;
-	row_t *parent;
 } cell_t;
 
 
@@ -51,9 +50,8 @@ typedef struct cell
 typedef struct row
 {
 	cell_t *cells;
-	sheet_t *parent;
 } row_t;
-
+int row_clean(row_t *obj);
 
 // sheet def and functions
 typedef struct sheet
@@ -61,10 +59,9 @@ typedef struct sheet
 	row_t *rows;
 	size_t num_rows;
 	size_t num_cols;
-	xlsx_t *parent;
 } sheet_t;
-sheet_t *sheet_generate(zip_t *xlsx_file);
-int sheet_destroy(sheet_t *obj);
+sheet_t *sheet_generate(xml_t *raw);
+int sheet_clean(sheet_t *obj);
 
 
 typedef struct workbook
@@ -73,13 +70,13 @@ typedef struct workbook
 	size_t num_sheets;
 } workbook_t;
 workbook_t *workbook_generate(xlsx_t *target);
+int workbook_clean(workbook_t *obj);
 
 // xlsx def and functions
 typedef struct xlsx
 {
 	zip_t *zip;
-	sheet_t *sheets;
-	size_t num_sheets;
+	workbook_t workbook;
 } xlsx_t;
 xlsx_t *xlsx_open(const char *filename);
 int xlsx_close(xlsx_t *obj);
