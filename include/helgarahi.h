@@ -60,7 +60,8 @@ typedef struct sheet
 	size_t num_rows;
 	size_t num_cols;
 } sheet_t;
-sheet_t *sheet_generate(xml_t *raw);
+int sheet_generate(sheet_t *target, xml_t *raw);
+//sheet_t *sheet_generate(xml_t *raw);
 int sheet_clean(sheet_t *obj);
 
 

@@ -1,8 +1,8 @@
 #include "helgarahi.h"
 
-sheet_t *sheet_generate(xml_t *raw)
+int sheet_generate(sheet_t *target, xml_t *raw)
 {
-	return 0x0;
+	return 0;
 }
 
 int sheet_clean(sheet_t *obj)
