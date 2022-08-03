@@ -42,8 +42,6 @@ typedef struct workbook
 	sheet_t *sheets;
 	size_t num_sheets;
 } workbook_t;
-int workbook_generate(xlsx_t *target);
-
 
 // xlsx def and functions
 typedef struct xlsx

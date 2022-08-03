@@ -1,6 +1,7 @@
 #include "helgarahi.h"
 #include <stdlib.h>
 
+int workbook_generate(xlsx_t *target);
 int workbook_clean(workbook_t *obj);
 
 xlsx_t *xlsx_open(const char *filename)
@@ -23,7 +24,10 @@ xlsx_t *xlsx_open(const char *filename)
 	}
 
 	to_ret->workbook.num_sheets = 0;
-
+	if (workbook_generate(to_ret)) {
+		free(to_ret);
+		to_ret = 0x0;
+	}
 exit:
 	return to_ret;
 }
