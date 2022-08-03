@@ -91,7 +91,7 @@ int sheet_generate(sheet_t *target, xml_t *raw)
 	}
 	_sheet.cur_cell = _sheet.a->cells;
 	XML_ParserReset(parser, "US-ASCII");
-	XML_SetUserData(parser, target);
+	XML_SetUserData(parser, &_sheet);
 	XML_SetElementHandler(parser, sheet_import_start, sheet_import_end);
 	XML_SetCharacterDataHandler(parser, sheet_import_handler);
 	if (!XML_Parse(parser, raw->buffer, raw->read_size, 0)) {
