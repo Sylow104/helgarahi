@@ -37,6 +37,10 @@ typedef struct sheet
 	size_t num_cols;
 } sheet_t;
 
+typedef struct parser parser_t;
+
+typedef struct sheet_new sheet_new_t;
+
 typedef struct workbook
 {
 	sheet_t *sheets;
@@ -51,6 +55,25 @@ typedef struct xlsx
 } xlsx_t;
 xlsx_t *xlsx_open(const char *filename);
 int xlsx_close(xlsx_t *obj);
+
+
+typedef enum parser_status
+{
+	PARSER_READY,
+	PARSER_OK,
+	PARSER_DATA,
+	PARSER_ERROR
+} parser_e;
+
+typedef struct parser parser_t;
+parser_t *parser_setup(void (* start)(void *, const char *, const char **),
+	void (* end)(void *, const char *), 
+	void (* handler)(void *, const XML_Char *, int),
+	void *user_data,
+	xml_t *raw);
+parser_e parser_step(parser_t *obj);
+int parser_free(parser_t *obj);
+
 
 #ifdef __cplusplus
 }
