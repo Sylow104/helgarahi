@@ -61,6 +61,8 @@ int workbook_generate(xlsx_t *target)
 	}
 	xml_free(workbook_raw);
 
+/* new method willl not generate whole table, but rather get row by row */
+/*
 	// generate sheets
 	to_use->sheets = (sheet_t *) 
 		malloc(sizeof(sheet_t) * to_use->num_sheets);
@@ -76,7 +78,8 @@ int workbook_generate(xlsx_t *target)
 		}
 		xml_free(cur_xml);
 	}
-	
+*/
+
 exit:
 	return to_ret;
 on_fail:
