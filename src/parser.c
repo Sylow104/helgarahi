@@ -4,8 +4,6 @@ typedef struct parser
 {
 	XML_Parser parser;
 	xml_t *raw;
-	enum XML_Status p_status;
-	parser_e i_status;
 } parser_t;
 
 parser_t *parser_setup(void (* start)(void *, const char *, const char **),
@@ -36,28 +34,17 @@ parser_t *parser_setup(void (* start)(void *, const char *, const char **),
 	}
 	to_ret->parser = parser;
 	to_ret->raw = raw;
-	to_ret->i_status = PARSER_READY;
 	return to_ret;
 }
 
-parser_e parser_step(parser_t *obj)
+int parser_step(parser_t *obj)
 {
-	if (!obj->i_status) {
-		obj->p_status = XML_Parse(obj->parser, obj->raw->buffer, 
-			obj->raw->read_size, 0);
-	} else if (obj->i_status == PARSER_DATA) {
-		obj->p_status = XML_ResumeParser(obj->parser);
+	if (XML_Parse(obj->parser, obj->raw->buffer, obj->raw->read_size,
+		0)) {
+		return -1;
 	}
 
-	switch (obj->p_status) {
-		case XML_STATUS_OK:
-			return PARSER_OK;
-		case XML_STATUS_SUSPENDED:
-			return PARSER_DATA;
-		default:
-		case XML_STATUS_ERROR:
-			return PARSER_ERROR;
-	}
+	return 0;
 }
 
 int parser_free(parser_t *obj)
