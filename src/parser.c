@@ -39,18 +39,23 @@ parser_t *parser_setup(void (* start)(void *, const char *, const char **),
 
 int parser_step(parser_t *obj)
 {
-	if (XML_Parse(obj->parser, obj->raw->buffer, obj->raw->read_size,
+	if (!XML_Parse(obj->parser, obj->raw->buffer, obj->raw->read_size,
 		0)) {
+		printf("Error Parsing: %s\n", 
+			XML_ErrorString(XML_GetErrorCode(obj->parser)));
 		return -1;
 	}
 
 	return 0;
 }
 
-int parser_free(parser_t *obj)
+int parser_free(parser_t *obj, bool free_raw)
 {
 	if (obj) {
 		XML_ParserFree(obj->parser);
+		if (free_raw) {
+			xml_free(obj->raw);
+		}
 		return 0;
 	} else {
 		return -1;
