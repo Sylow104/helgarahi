@@ -22,6 +22,10 @@ typedef struct xml
 xml_t *xml_load(const char *file, zip_t *zip);
 int xml_free(xml_t *obj);
 
+typedef struct row row_t;
+typedef int (*row_callback_f)(void *ext_data, 
+	const char **contents, size_t n_content);
+
 
 // cell def and functions
 typedef struct cell
