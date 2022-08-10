@@ -63,7 +63,7 @@ parser_t *parser_setup(void (* start)(void *, const char *, const char **),
 	void *user_data,
 	xml_t *raw);
 int parser_step(parser_t *obj);
-int parser_free(parser_t *obj);
+int parser_free(parser_t *obj, bool free_raw);
 
 
 #ifdef __cplusplus
